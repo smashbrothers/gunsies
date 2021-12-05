@@ -1,0 +1,15 @@
+/loadmod gunsies
+
+// BULLET WEAPONS
+/loadwep weapons/piercer rifle
+/loadwep weapons/piercer smg
+/loadwep weapons/warp rifle
+/loadwep weapons/warp smg
+/loadwep weapons/nemesis
+
+// BOLT WEAPONS
+/loadwep weapons/beetle gun
+/loadwep weapons/beetle minigun
+/loadwep weapons/seed gun
+/loadwep weapons/syringe gun
+/loadwep weapons/syringe minigun
