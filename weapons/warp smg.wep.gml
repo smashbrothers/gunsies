@@ -13,24 +13,19 @@
 
 #define weapon_reloaded
 	 // The Shells:
-	with(instance_create(x, y, Shell)){
+	with(obj_create(x, y, "WarpShell")){
 		direction = other.gunangle + (other.right * 90) + orandom(30);
 		speed	  = 3 + random(2);
 	}
 
 #define weapon_fire(_wep)
-    var l = 4, 
-        d = gunangle + (accuracy * orandom(24));
-        
+
      // Projectile:
     with(obj_create(x, y, "WarpBullet")){
-        move_contact_solid(d, l);
-        
         creator = other;
         team    = other.team;
-        
-        image_angle = d;
-        direction   = d;
+        direction   = other.gunangle + (other.accuracy * orandom(16));
+        image_angle = direction;
         speed       = 12;
     }
                     
@@ -38,7 +33,13 @@
     weapon_post(6, 4, 6);
     
      // Sounds:
-    sound_play(sndPistol);
+    audio_sound_set_track_position(sound_play_pitchvol(sndPortalStrikeFireButt, random_range(1.1, 1.3), 2), 1.05);
+    
+    sound_play_pitchvol(sndMachinegun, random_range(1.3, 1.5), 0.6);
+    
+    var _snd = sound_play_gun(sndRogueRifle, 0, 0.3);
+    audio_sound_pitch(_snd, random_range(0.8, 1));
+    audio_sound_gain(_snd, 0, 300);
     
 #define orandom(_num) return irandom_range(-_num, _num);
 #define obj_create(_x, _y, _name) return mod_script_call("mod", "gunsies", "obj_create", _x, _y, _name);

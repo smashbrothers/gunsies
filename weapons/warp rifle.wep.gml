@@ -8,31 +8,25 @@
 #define weapon_cost return 2;
 #define weapon_load return 8;
 #define weapon_area return 7; // 3-3
-#define weapon_swap 
-	audio_sound_set_track_position(sound_play_hit(sndHorrorPortal, 0.3), 1.2);
-	return sndSwapMachinegun;
+#define weapon_swap return sndSwapMachinegun;
 
 #define weapon_reloaded
 	 // The Shells:
-	repeat(weapon_get_cost(mod_current)){
-		with(instance_create(x, y, Shell)){
+	repeat(2){
+		with(obj_create(x, y, "WarpShell")){
 			direction = other.gunangle + (other.right * 90) + orandom(30);
 			speed	  = 3 + random(2);
 		}
 	}
 
 #define weapon_fire(_wep)
-    var l = 4, 
-        d = gunangle + (accuracy * orandom(4));
-        
+	
      // Projectile:
     with(obj_create(x, y, "WarpBullet")){
-        move_contact_solid(d, l);
-        
         creator = other;
         team    = other.team;
-        image_angle = d;
-        direction   = d;
+        direction   = other.gunangle + (other.accuracy * orandom(4));
+        image_angle = direction;
         speed       = 12;
     }
                     
@@ -40,8 +34,13 @@
     weapon_post(6, 4, 6);
     
      // Sounds:
-    sound_play(sndPistol);
-    // sound_set_track_position(sound_play(sndRogueRifle), 0);
+    audio_sound_set_track_position(sound_play_pitchvol(sndPortalStrikeFireButt, random_range(1.1, 1.3), 2), 1.05);
+    
+    sound_play_pitchvol(sndMachinegun, random_range(1.3, 1.5), 0.6);
+    
+    var _snd = sound_play_gun(sndRogueRifle, 0, 0.3);
+    audio_sound_pitch(_snd, random_range(0.8, 1));
+    audio_sound_gain(_snd, 0, 300);
     
      // Burst:
     if(array_find_index(instances_matching(CustomObject, "name", "WeaponBurst"), other) < 0){

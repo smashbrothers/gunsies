@@ -13,23 +13,20 @@
 
 #define weapon_reloaded
 	 // The Shells:
-	with(instance_create(x, y, Shell)){
+	with(obj_create(x, y, "PiercerShell")){
 		direction = other.gunangle + (other.right * 90) + orandom(30);
 		speed	  = 3 + random(2);
 	}
 
 #define weapon_fire(_wep)
-    var l = 4, 
-        d = gunangle + (accuracy * orandom(24));
-        
+
      // Projectile:
     with(obj_create(x, y, "PiercerBullet")){
-        move_contact_solid(d, l);
         
         creator = other;
         team    = other.team;
-        image_angle = d;
-        direction   = d;
+        direction   = other.gunangle + (other.accuracy * orandom(20));
+        image_angle = direction;
         speed       = 16;
     }
                     
@@ -37,7 +34,9 @@
     weapon_post(6, 4, 6);
     
      // Sounds:
-    sound_play(sndPistol);
+    audio_sound_set_track_position(sound_play_pitchvol(sndGuitarHit7, random_range(0.7, 0.9), 0.8), 0.2);
+    audio_sound_set_track_position(sound_play_pitchvol(sndNothing2Ball, random_range(0.8, 1), 0.4), 0.2);
+    audio_sound_pitch(sound_play_gun(sndPistol, 0, 0.3), random_range(0.7, 0.9));
     
 #define orandom(_num) return irandom_range(-_num, _num);
 #define obj_create(_x, _y, _name) return mod_script_call("mod", "gunsies", "obj_create", _x, _y, _name);

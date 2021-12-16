@@ -5,7 +5,7 @@
 #define weapon_name return "SYRINGE MINIGUN";
 #define weapon_text return "A CLIP FULL OF SUGAR";
 #define weapon_type return 3; // Bolt
-#define weapon_cost return 2;
+#define weapon_cost return 1;
 #define weapon_load return 9;
 #define weapon_area return 13; // 7-1
 #define weapon_swap return sndSwapBow;

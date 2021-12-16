@@ -13,32 +13,38 @@
 #define weapon_reloaded
 	 // The Shells:
 	repeat(3){
-		with(instance_create(x, y, Shell)){
+		with(obj_create(x, y, "PiercerShell")){
 			direction = other.gunangle + (other.right * 90) + orandom(30);
 			speed	  = 3 + random(2);
 		}
 	}
 
 #define weapon_fire(_wep)
-    var l = 4, 
-        d = gunangle + (accuracy * orandom(4));
         
      // Projectile:
     with(obj_create(x, y, "PiercerBullet")){
-        move_contact_solid(d, l);
         
         creator = other;
         team    = other.team;
-        image_angle = d;
-        direction   = d;
+        direction   = other.gunangle + (other.accuracy * orandom(4));
+        image_angle = direction;
         speed       = 16;
     }
                     
      // Game Feel:
     weapon_post(6, 4, 6);
+    sleep(30);
     
      // Sounds:
-    sound_play(sndPistol);
+    // sound_play_pitch(sndBouncerSmg, 1.2)
+    // sound_play_pitchvol(sndSmartgun, 2, 0.4);
+    // sound_play_pitchvol(sndTurretFire, 0.9, 0.7);
+    // sound_play_pitch(sndPistol, 0.8)
+    // audio_sound_set_track_position(sound_play_pitch(sndPlasmaHit, random_range(0.4, 0.5)), 0.18);
+    // audio_sound_set_track_position(sound_play_pitchvol(sndGunGun, random_range(0.9, 1.1), 0.6), 0.2);
+    audio_sound_set_track_position(sound_play_pitchvol(sndGuitarHit7, random_range(0.7, 0.9), 0.8), 0.2);
+    audio_sound_set_track_position(sound_play_pitchvol(sndNothing2Ball, random_range(0.8, 1), 0.4), 0.2);
+    audio_sound_pitch(sound_play_gun(sndPistol, 0, 0.3), random_range(0.7, 0.9));
     
      // Burst:
     if(array_find_index(instances_matching(CustomObject, "name", "WeaponBurst"), other) < 0){

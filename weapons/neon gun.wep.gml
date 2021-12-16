@@ -23,7 +23,7 @@
     		team = other.team;
     		
     		direction = other.gunangle + orandom(4);
-    		speed = 6;
+    		speed = random(6);
     		
     		parent = _last;
     		with(_last){
@@ -32,6 +32,7 @@
     		_last = self;
     	}
     }
+    _last.speed = 6;
     
     weapon_post(8, 4, 4);
     sound_play(sndLaser);
@@ -45,6 +46,7 @@
 		
 		 // Vars:
 		mask_index = mskPlasma;
+		friction = 0.2;
 		damage = 2;
 		force = 2;
 		typ = 0;
@@ -53,29 +55,62 @@
 		
 		 // Events:
 		on_end_step = script_ref_create(Neon_end_step);
+		on_hit = script_ref_create(Neon_hit);
 		on_wall = script_ref_create(Neon_wall);
 		
 		return self;
 	}
 	
 #define Neon_end_step
-	if(instance_exists(child)){
-		var _len = 10,
-			_dis = point_distance(x, y, child.x, child.y),
-			_dir = point_direction(x, y, child.x, child.y);
+	if(!instance_exists(child)){
+		var _inst = instances_matching_le(instances_matching(object_index, "name", name), "id", id),
+			_cx = 0,
+			_cy = 0;
 			
-		var l = (_dis - _len) / 2,
-			d = _dir;
+		with(_inst){
+			if(!instance_exists(parent)){
+				_inst = instances_matching_ge(_inst, "id", id);
+				break;
+			}
+		}
 		
-		x += lengthdir_x(l, d);
-		y += lengthdir_y(l, d);
+		var _num = array_length(_inst);
+			
+		with(_inst){
+			_cx += x;
+			_cy += y;
+		}
 		
-		child.x -= lengthdir_x(l, d);
-		child.y -= lengthdir_y(l, d);
+		_cx /= _num;
+		_cy /= _num;
+		
+		var _ang = 0;
+		
+		with(_inst){
+			_ang += point_direction(_cx, _cy, x, y);
+		}
+		
+		_ang /= _num;
+		
+		var a = 10,
+			b = floor(_num / -2) * a;
+			
+		with(_inst){
+			x += lengthdir_x(b, _ang);
+			y += lengthdir_y(b, _ang);
+			
+			b += a;
+		}
+	}
+	
+#define Neon_hit
+	if(projectile_canhit_melee(other)){
+		projectile_hit_push(other, damage, force);
 	}
 	
 #define Neon_wall
 	move_bounce_solid(false);
+	speed *= 4/3;
     
 #define orandom(_num) return irandom_range(-_num, _num);
 #define obj_create(_x, _y, _name) return mod_script_call("mod", "gunsies", "obj_create", _x, _y, _name);
