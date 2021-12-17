@@ -196,6 +196,22 @@
 	
 	speed = clamp(speed, minspeed, maxspeed);
 	
+	 // Seek:
+	var _skill = skill_get(mut_bolt_marrow);
+	
+	if(_skill > 0 && instance_exists(enemy)){
+		var _near = instance_nearest(x, y, enemy),
+			_dist = distance_to_object(_near);
+			
+		if(_dist < (_skill * 32)){
+			var _len = min(_dist, 2) * current_time_scale,
+				_dir = point_direction(x, y, _near.x, _near.y);
+				
+			x += lengthdir_x(_len, _dir);
+			y += lengthdir_y(_len, _dir);
+		}
+	}
+	
 	 // Destroy:
 	var _minScale = 1/6;
 	if(image_xscale < _minScale || image_yscale < _minScale){
@@ -203,8 +219,32 @@
 	}
 	
 #define MegaDisc_end_step
+	var _x1 =  1/0,
+		_y1 =  1/0,
+		_x2 = -1/0,
+		_y2 = -1/0;
+		
+	for(var i = 0; i < maxp; i++){
+		var _x = view_xview[i],
+			_y = view_yview[i];
+			
+		if(_x < _x1) _x1 = _x;
+		if(_y < _y1) _y1 = _y;
+		if(_x > _x2) _x2 = _x;
+		if(_y > _y2) _y2 = _y;
+	}
+	
+	var m = ((image_xscale + image_yscale) / 2) * 64;
+	
+	_x1 -= m;
+	_y1 -= m;
+	_x2 += game_width  + m;
+	_y2 += game_height + m;
+		
+	visible = point_in_rectangle(x, y, _x1, _y1, _x2, _y2);
+		
 	 // Trail:
-	if(time <= 0 && (current_frame % 2) < current_time_scale){
+	if(visible && time <= 0 && (current_frame % 2) < current_time_scale){
 		var s = (image_xscale + image_yscale) / 2,
 			o = 360 / round((s * 64 * pi) / 5),
 			w = max(lerp(s, 2, 1/3), 4/3),
@@ -221,7 +261,7 @@
 			}
 		}
 	}
-	
+
 #define MegaDisc_draw
 	if(flash > 0){
 		draw_set_fog(true, image_blend, 0, 0);

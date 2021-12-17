@@ -15,6 +15,9 @@
 /loadwep weapons/syringe gun
 /loadwep weapons/syringe minigun
 
+// EXPLOSIVE WEAPONS
+/loadwep weapons/acid bazooka
+
 // ENERGY WEAPONS
 /loadwep weapons/bouncy laser
 /loadwep weapons/abyss tether
